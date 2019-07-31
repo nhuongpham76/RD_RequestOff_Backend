@@ -4,16 +4,14 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Resources\UserResource;
 
 /**
  * Class AuthController
  *
  * @package App\Http\Controllers
  */
-class LoginController extends ApiController
+class LogoutController extends ApiController
 {
 
     /**
@@ -25,15 +23,9 @@ class LoginController extends ApiController
      */
     public function __invoke(Request $request)
     {
-        $credentials = $request->only('username', 'password');
+        $this->guard()->logout();
 
-        if ($token = $this->guard()->attempt($credentials)) {
-            $user = new UserResource(Auth::user());
-            return $this->responseSuccess('', $user)
-                ->header('Authorization', $token);
-        }
-
-        return $this->responseError(trans('auth.failed'), [], Response::HTTP_UNAUTHORIZED);
+        return $this->responseSuccess(trans('auth.logout'));
     }
 
     /**
