@@ -45,7 +45,9 @@ class ListController extends Controller
             'name',
             'address',
             'email',
-            'status'
+            'status',
+            'phone',
+            'role_id'
         ]);
 
         $sortData = [

@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('phone');
             $table->string('email')->index()->unique();
             $table->smallInteger('status')->index()->default(1);
-            $table->smallInteger('role')->index()->default(1);
+            $table->smallInteger('role_id')->index();
             $table->rememberToken();
             $table->timestamps();
         });

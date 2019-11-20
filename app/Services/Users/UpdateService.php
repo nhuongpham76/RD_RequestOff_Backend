@@ -49,7 +49,7 @@ class UpdateService
     public function handle(int $id, array $data = [])
     {
         if ($data['password']) {
-            $data['password'] = $this->getSaltPassword($data['password']);
+            $data['password_encrypted'] = $this->getSaltPassword($data['password']);
         }
 
         $rule = $this->getRule($id);

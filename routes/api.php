@@ -13,4 +13,5 @@
 
 Route::group(['middleware' => 'api'], function () {
     require __DIR__ . '/api/route_user.php';
+    require __DIR__ . '/api/route_common.php';
 });

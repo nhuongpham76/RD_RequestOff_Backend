@@ -54,10 +54,9 @@ class ListService
             'code',
             'name',
             'email',
-            'password',
             'phone',
             'address',
-            'role',
+            'role_id',
             'created_at'
         ];
 
@@ -70,7 +69,7 @@ class ListService
             'sortColumn' => $sortColumn,
             'sortDirection' => $sortDirection,
             'columns' => $columns,
-            'sort' => $sort
+            'sort' => $sort,
         ]);
     }
 }
