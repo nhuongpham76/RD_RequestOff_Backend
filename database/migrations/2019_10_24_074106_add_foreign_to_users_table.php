@@ -19,6 +19,12 @@ class AddForeignToUsersTable extends Migration
                 ->on('teams')
                 ->onUpdate('RESTRICT')
                 ->onDelete('CASCADE');
+
+            $table->foreign('role_id', 'users_ibfk_2')
+                ->references('id')
+                ->on('roles')
+                ->onUpdate('RESTRICT')
+                ->onDelete('CASCADE');
         });
     }
 
@@ -31,6 +37,7 @@ class AddForeignToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign('users_ibfk_1');
+            $table->dropForeign('users_ibfk_2');
         });
     }
 }

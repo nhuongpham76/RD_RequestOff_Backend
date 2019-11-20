@@ -41,6 +41,8 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+$app->register(App\Providers\HelperServiceProvider::class);
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application

@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Models\User;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\Traits\EloquentTransactional;
+use App\Validators\Exceptions\ValidatorException;
 use App\Validators\UserValidator;
 use DB;
 
@@ -45,6 +46,8 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         'name' => ['column' => 'users.name', 'operator' => 'ilike', 'type' => 'normal'],
         'address' => ['column' => 'users.address', 'operator' => 'ilike', 'type' => 'normal'],
         'email' => ['column' => 'users.email', 'operator' => 'ilike', 'type' => 'normal'],
+        'phone' => ['column' => 'users.phone', 'operator' => '=', 'type' => 'normal'],
+        'role_id' => ['column' => 'users.role_id', 'operator' => '=', 'type' => 'normal'],
     ];
 
     /**
@@ -56,7 +59,14 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      */
     public function createUser(array $data)
     {
-        $this->validator->setRules([], UserValidator::RULE_CREATE);
+        $validator = app('validator')->make($data, $this->validator->getRules(UserValidator::RULE_CREATE));
+
+        if ($validator->fails()) {
+            throw new ValidatorException($validator->errors());
+        }
+
+        $data['password'] = $data['password_encrypted'];
+        $this->setAllowValidator(false);
 
         return $this->create($data);
     }
@@ -73,6 +83,14 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     public function updateUser(int $id, array $data, array $rule)
     {
         $this->validator->setRules($rule, UserValidator::RULE_UPDATE);
+        $validator = app('validator')->make($data, $this->validator->getRules(UserValidator::RULE_CREATE));
+
+        if ($validator->fails()) {
+            throw new ValidatorException($validator->errors());
+        }
+
+        $data['password'] = $data['password_encrypted'];
+        $this->setAllowValidator(false);
 
         return $this->update($data, $id);
     }
@@ -94,7 +112,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
                 'users.email',
                 'users.phone',
                 'users.address',
-                'users.role',
+                'users.role_id',
                 'users.created_at',
             ]);
     }
@@ -109,8 +127,33 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     public function listUser(array $data)
     {
         return $this->search($data['search'])
+            ->with($this->getDataRelation())
             ->orderBy($data['sortColumn'], $data['sortDirection'])
             ->orderBy('id', 'desc')
             ->paginate($data['sort']['per_page'], $data['columns']);
+    }
+
+    /**
+     * Get data relation with user.
+     *
+     * @return array
+     */
+    private function getDataRelation()
+    {
+        $with['team'] = function ($query) {
+            return $query->select([
+                'teams.id',
+                'teams.name',
+            ]);
+        };
+
+        $with['role'] = function ($query) {
+            return $query->select([
+                'roles.id',
+                'roles.name',
+            ]);
+        };
+
+        return $with;
     }
 }

@@ -49,9 +49,11 @@ class UpdateController extends Controller
             'name',
             'email',
             'password',
+            'password_confirmation',
             'phone',
             'address',
-            'role',
+            'role_id',
+            'status'
         ]);
 
         try {

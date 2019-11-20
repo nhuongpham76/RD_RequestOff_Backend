@@ -48,7 +48,11 @@ class CreateService
      */
     public function handle(array $data = [])
     {
-        $data['password'] = $this->getSaltPassword($data['password']);
+        if ($data['password']) {
+            $data['password_encrypted'] = $this->getSaltPassword($data['password']);
+        }
+
+        $data['status'] = User::STATUS_REGISTED;
 
         return $this->repository->createUser($data);
     }

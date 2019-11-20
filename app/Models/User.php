@@ -52,6 +52,17 @@ class User extends Authenticatable
     ];
 
     /**
+     * Status trans
+     *
+     * @var array
+     */
+    public static $statusTrans = [
+        self::STATUS_REGISTED => "labels.user.status_registed",
+        self::STATUS_USING => "labels.user.status_using",
+        self::STATUS_STOPPED => "labels.user.status_stopped",
+    ];
+
+    /**
      * The database table used by the model.
      *
      * @var string
@@ -71,7 +82,8 @@ class User extends Authenticatable
         'password',
         'phone',
         'address',
-        'role',
+        'role_id',
+        'status'
     ];
 
     /**
@@ -82,4 +94,24 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * User belongsTo Team
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
+
+    /**
+     * User belongsTo Role
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 }
